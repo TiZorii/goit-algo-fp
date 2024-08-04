@@ -32,14 +32,40 @@ def draw_tree(tree_root):
     nx.draw(tree, pos=nx.get_node_attributes(tree, 'pos'), with_labels=True, arrows=False, node_size=2500, node_color=colors)
     plt.show()
 
-# Створення дерева
-root = Node(0)
-root.left = Node(1, "green")
-root.right = Node(2, "yellow")
-root.left.left = Node(3, "grey")
-root.left.right = Node(4, "purple")
-root.right.left = Node(5, "orange")
-root.right.right = Node(6, "white")
+# Функція для перетворення списку у мін-купу
+def heapify(arr, n, i):
+    smallest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
+
+    if l < n and arr[i] > arr[l]:
+        smallest = l
+
+    if r < n and arr[smallest] > arr[r]:
+        smallest = r
+
+    if smallest != i:
+        arr[i], arr[smallest] = arr[smallest], arr[i]
+        heapify(arr, n, smallest)
+
+def build_heap(arr):
+    n = len(arr)
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+# Функція для побудови дерева з купи
+def build_tree_from_heap(arr, index=0):
+    if index >= len(arr):
+        return None
+    node = Node(arr[index])
+    node.left = build_tree_from_heap(arr, 2 * index + 1)
+    node.right = build_tree_from_heap(arr, 2 * index + 2)
+    return node
+
+# Приклад використання
+arr = [3, 1, 6, 5, 2, 4]
+build_heap(arr)
+heap_tree = build_tree_from_heap(arr)
 
 # Відображення дерева
-draw_tree(root)
+draw_tree(heap_tree)
